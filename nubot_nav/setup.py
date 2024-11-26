@@ -11,6 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/manual_explore.launch.xml']),
+        ('share/' + package_name + '/config', ['launch/explore.launch.py']),
         ('share/' + package_name + '/config', ['config/nav2_params.yaml']),
         ('share/' + package_name + '/config', ['config/manual_explore.rviz']),
     ],
@@ -23,6 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'explore = nubot_nav.explore:explore_entry',
         ],
     },
 )
