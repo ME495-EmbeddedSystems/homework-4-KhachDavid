@@ -1,15 +1,16 @@
-import rclpy
-from rclpy.node import Node
-from nav_msgs.msg import OccupancyGrid
-from nav2_msgs.action import NavigateToPose
-from rclpy.action import ActionClient
-import numpy as np
-from geometry_msgs.msg import PoseStamped
-from enum import Enum, auto
 import random
 
+from geometry_msgs.msg import PoseStamped
+from nav2_msgs.action import NavigateToPose
+from nav_msgs.msg import OccupancyGrid
+import numpy as np
+import rclpy
+from rclpy.action import ActionClient
+from rclpy.node import Node
+
+
 def explore_entry(args=None):
-    """Entry point for the explore node"""
+    """Entry point for the explore node."""
     rclpy.init(args=args)
     node = Explore()
     rclpy.spin(node)
@@ -18,14 +19,14 @@ def explore_entry(args=None):
 
 
 class Explore(Node):
-    """Explore the navigation stack with a state machine"""
+    """Explore the navigation stack with a state machine."""
 
     def __init__(self):
-        """Initialize the node"""
+        """Initialize the node."""
         super().__init__('explore')
         self.get_logger().info('Exploring the navigation stack')
 
-        # Use the map_saver_cli in the nav2_map_server package to save the resulting map and place it within the maps directory of the git repository
+        # Use the map_saver_cli in the nav2_map_server package to save the resulting map
         self.create_subscription(
             OccupancyGrid,
             'map',
@@ -99,9 +100,12 @@ class Explore(Node):
         goal_msg.pose = goal_pose
 
         self.get_logger().info(f'Navigating to target at {frontier}')
-        future = self.goal_client.send_goal_async(goal_msg, feedback_callback=self.on_goal_feedback)
+        future = self.goal_client.send_goal_async(
+            goal_msg,
+            feedback_callback=self.on_goal_feedback
+        )
         future.add_done_callback(self.on_goal_result)
-        
+
     def on_goal_feedback(self, feedback):
         """Handle the feedback of the navigation action."""
         self.get_logger().info(f'Feedback: {feedback}')
@@ -118,10 +122,6 @@ class Explore(Node):
         target_position = random.choice(list(self.target_positions))
         self.navigate_to_frontier(target_position)
 
-    def move_to_next_state(self):
-        """Move to the next state (corner)."""
-        # Transition to the next corner (state) in the enum order
-        pass
 
 if __name__ == '__main__':
     import sys
