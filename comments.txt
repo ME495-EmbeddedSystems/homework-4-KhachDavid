@@ -1,0 +1,1 @@
+nubot is a dependency that should be cloned separately inside ws/src, not a part of your code repository.
